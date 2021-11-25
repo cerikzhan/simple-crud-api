@@ -1,6 +1,7 @@
 const http = require('http');
 const { Service } = require('./service');
 const { urlValidator } = require('./url-validator');
+const { getRequestData } = require('./utils');
 
 function main() {
     const server = http.createServer(async (req, res) => {
@@ -22,7 +23,8 @@ function main() {
                 data = await service.get();
                 break;
             case 'POST':
-                data = await service.post();
+                const person = await getRequestData(req);
+                data = await service.post(JSON.parse(person));
                 break;
             case 'PUT':
                 data = await service.put();

@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { Controller } = require('./controller');
 
 class Service {
@@ -8,18 +9,22 @@ class Service {
 
     async get() {
         if (this.url.length === 1) {
-            const data = await this.controller.getPersons();
-            return data;
+            const personList = await this.controller.getPersons();
+            return personList;
         }
 
         if (this.url.length === 2) {
-            const data = await this.controller.getPerson(this.url[1]);
-            return data;
+            const person = await this.controller.getPersonById(this.url[1]);
+            return person;
         }
     }
 
-    post() {
-        console.log('post method called');
+    async post(payload) {
+        const person = await this.controller.createPerson(payload)
+            .catch((err) => {
+                return JSON.stringify({ message: err.message });
+            });
+        return person;
     }
 
     put() {

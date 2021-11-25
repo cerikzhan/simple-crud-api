@@ -6,7 +6,7 @@ class Controller {
         return new Promise((resolve) => resolve(JSON.stringify(persons)));
     }
 
-    async getPerson(id) {
+    async getPersonById(id) {
         return new Promise((resolve, reject) => {
             let person = persons.find((person) => person.id === id);
 
@@ -18,12 +18,20 @@ class Controller {
         });
     }
 
-    async createPerson(todo) {
-        return new Promise((resolve) => {
+    async createPerson(payload) {
+        return new Promise((resolve, reject) => {
+            if (!payload.name || !payload.age || !payload.hobbies?.length) {
+                reject(new Error('All fields required'));
+            }
+
             let newPerson = {
                 id: crypto.randomUUID(),
-                ...todo,
+                name: payload.name,
+                age: payload.age,
+                hobbies: payload.hobbies,
             };
+
+            persons.push(newPerson);
 
             resolve(JSON.stringify(newPerson));
         });
