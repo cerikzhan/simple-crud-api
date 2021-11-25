@@ -34,8 +34,12 @@ class Service {
         return person;
     }
 
-    delete() {
-        console.log('delete method called');
+    async delete() {
+        const state = await this.controller.deletePerson(this.url[1])
+            .catch((err) => {
+                return { message: err.message };
+            });
+        return state;
     }
 }
 

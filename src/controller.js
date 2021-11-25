@@ -57,11 +57,10 @@ class Controller {
         return new Promise((resolve, reject) => {
             const index = persons.findIndex((person) => person.id === id);
             if (index === -1) {
-                reject(`Person with id ${id} not found`);
+                reject(new Error(`Person with id ${id} not found`));
             }
-
             persons.splice(index, 1);
-            resolve('Person deleted successfully');
+            resolve({ message: 'Person deleted successfully' });
         });
     }
 }

@@ -32,7 +32,7 @@ function main() {
                 data = await service.put(JSON.parse(person));
                 break;
             case 'DELETE':
-                data = service.delete();
+                data = await service.delete();
                 break;
         }
 
