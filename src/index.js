@@ -8,12 +8,13 @@ function main() {
         let url;
         let data;
         let statusCode = 200;
+        let person;
 
         try {
             url = urlValidator(req.url);
         } catch (err) {
             res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Page not found' }));
+            res.end(JSON.stringify({ message: err.message }));
         }
 
         const service = new Service(url);
@@ -23,11 +24,12 @@ function main() {
                 data = await service.get();
                 break;
             case 'POST':
-                const person = await getRequestData(req);
+                person = await getRequestData(req);
                 data = await service.post(JSON.parse(person));
                 break;
             case 'PUT':
-                data = await service.put();
+                person = await getRequestData(req);
+                data = await service.put(JSON.parse(person));
                 break;
             case 'DELETE':
                 data = service.delete();
@@ -35,7 +37,7 @@ function main() {
         }
 
         res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-        res.end(data);
+        res.end(JSON.stringify(data));
     });
 
 

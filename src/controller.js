@@ -3,7 +3,7 @@ const { persons } = require('./data');
 
 class Controller {
     async getPersons() {
-        return new Promise((resolve) => resolve(JSON.stringify(persons)));
+        return new Promise((resolve) => resolve(persons));
     }
 
     async getPersonById(id) {
@@ -11,7 +11,7 @@ class Controller {
             let person = persons.find((person) => person.id === id);
 
             if (person) {
-                resolve(JSON.stringify(person));
+                resolve(person);
             } else {
                 reject(new Error(`Person with id ${id} not found`));
             }
@@ -33,7 +33,7 @@ class Controller {
 
             persons.push(newPerson);
 
-            resolve(JSON.stringify(newPerson));
+            resolve(newPerson);
         });
     }
 
@@ -41,11 +41,15 @@ class Controller {
         return new Promise((resolve, reject) => {
             const index = persons.findIndex((person) => person.id === payload.id);
             if (index === -1) {
-                reject(`${payload.name} not found`);
+                reject(`${personId} not found`);
+            }
+
+            if (!payload.name || !payload.age || !payload.hobbies?.length) {
+                reject(new Error('Not correct data'));
             }
 
             persons.splice(index, 1, payload);
-            resolve(JSON.stringify(payload));
+            resolve(payload);
         });
     }
 
