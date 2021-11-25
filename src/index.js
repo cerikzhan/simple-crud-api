@@ -1,43 +1,41 @@
 const http = require('http');
 const { Service } = require('./service');
-const { urlValidator } = require('./url-validator');
 const { getRequestData } = require('./utils');
+const { CustomError } = require('./errors');
 
 function main() {
     const server = http.createServer(async (req, res) => {
-        let url;
         let data;
-        let statusCode = 200;
-        let person;
+        let personInfo;
 
         try {
-            url = urlValidator(req.url);
-        } catch (err) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            const service = new Service(req.url);
+
+            switch (req.method) {
+                case 'GET':
+                    data = await service.get();
+                    break;
+                case 'POST':
+                    personInfo = await getRequestData(req);
+                    data = await service.post(JSON.parse(personInfo));
+                    break;
+                case 'PUT':
+                    personInfo = await getRequestData(req);
+                    data = await service.put(JSON.parse(personInfo));
+                    break;
+                case 'DELETE':
+                    data = await service.delete();
+                    break;
+                default:
+                    throw new CustomError(500, 'Not valid method');
+            }
+
+            res.writeHead(data.statusCode, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(data.body));
+        } catch(err) {
+            res.writeHead(err.statusCode, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: err.message }));
         }
-
-        const service = new Service(url);
-
-        switch (req.method) {
-            case 'GET':
-                data = await service.get();
-                break;
-            case 'POST':
-                person = await getRequestData(req);
-                data = await service.post(JSON.parse(person));
-                break;
-            case 'PUT':
-                person = await getRequestData(req);
-                data = await service.put(JSON.parse(person));
-                break;
-            case 'DELETE':
-                data = await service.delete();
-                break;
-        }
-
-        res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(data));
     });
 
 
@@ -45,7 +43,7 @@ function main() {
     const HOSTNAME = process.env.APP_HOSTNAME;
 
     server.listen(PORT, HOSTNAME, () => {
-        console.log(`server started on port: ${PORT}`);
+        console.log(`server started on: ${HOSTNAME}:${PORT}`);
     })
 }
 
