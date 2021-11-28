@@ -19,6 +19,10 @@ describe('Test db', () => {
         server = main();
     });
 
+    afterAll(() => {
+        server.close();
+    })
+
     test('Get person list from db', async () => {
         const response = await request(server).get('/person');
 
