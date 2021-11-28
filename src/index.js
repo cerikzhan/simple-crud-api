@@ -43,7 +43,9 @@ function main() {
 
     server.listen(PORT, HOSTNAME, () => {
         console.log(`server started on: ${HOSTNAME}:${PORT}`);
-    })
+    });
+
+    return server;
 }
 
 module.exports = { main };
