@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const { v4: uuidv4 } = require('uuid');
 const { persons } = require('./data');
 const { CustomError } = require('./errors');
 
@@ -26,7 +26,7 @@ class Controller {
             }
 
             const newPerson = {
-                id: crypto.randomUUID(),
+                id: uuidv4(),
                 name: payload.name,
                 age: payload.age,
                 hobbies: payload.hobbies,
