@@ -13,3 +13,7 @@ Simple CRUD api repository
 Для запуска сборки и дев сервера:
 
 - npm run start:prod
+
+Для запуска теста:
+
+- npm run test
